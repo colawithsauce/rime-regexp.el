@@ -1,0 +1,22 @@
+#+TITLE: rime-regexp.el
+* 目标
+本来的目标是能够在 emacs 中使用五笔进行搜索，目前还存在有一些小缺陷。
+
+但是现在做完后发现好像是只要 rime 支持就能够搜索，无论是拼音还是五笔。
+* 目前的缺陷
+1. 强依赖 emacs-rime
+2. 需要在使用之前先激活关闭一下输入法 (emacs-rime)
+* 图
+[[file:example.png]]
+* 安装方法
+#+begin_src shell
+git clone https://github.com/colawithsauce/rime-regexp.el /what/ever/you/like
+#+end_src
+
+#+begin_src elisp
+(use-package rime-regexp
+  :load-path "/what/ever/you/like/rime-regexp.el"
+  :after rime)
+#+end_src
+
+而如之前的缺陷所说，如果要使用 RIME 进行 regexp 搜索的话，目前需要先手动先开启关闭一次输入法，使 RIME 先启动。
