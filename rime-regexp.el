@@ -26,7 +26,15 @@
   (module-load rime--module-path))
 
 (defun rime-regexp-get-candidates-list (str)
-  "Read STR, and return the RIME candidates words list."
+  "Read STR, and return a list contain RIME commit and candidates.
+
+Input:  yfth
+Output: (nil \"计算\" \"谋算\")
+
+Input: yfthgn
+Output: (\"计算\" \"与\" \"瓦\")
+
+This function is designed to only take consistent alpha string as args."
   (rime-lib-clear-composition)
   (mapc (lambda (c) (rime-lib-process-key c 0)) str)
   (let ((candidates (alist-get 'candidates (alist-get 'menu (rime-lib-get-context))))
@@ -54,7 +62,7 @@
                (equal str ""))
            str
          (let* ((str1 (replace-regexp-in-string "'" "" str))
-                (commit-and-candidates (rime-regexp-get-candidates-list str1)) ;; ("计算机科学" ("与" "瓦"))
+                (commit-and-candidates (rime-regexp-get-candidates-list str1)) ;; ("计算科学" "与" "瓦")
                 (commit (car commit-and-candidates))
                 (candidates (cdr commit-and-candidates)))
            ;; Prevent build regexp if not match.
