@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: i18n
 ;; Homepage: https://github.com/colawithsauce/rime-regexp
-;; Package-Requires: ((emacs "25.4"))
+;; Package-Requires: ((emacs "25.4") (emacs-rime "1.0.5"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -20,8 +20,7 @@
 ;;; Code:
 
 (require 'rime)
-
-(rime-deploy)
+(module-load rime--module-path)
 
 (defun rime-regexp-get-candidates-list (str)
   "Read STR, and return the RIME candidates words list."
