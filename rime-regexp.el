@@ -20,7 +20,10 @@
 ;;; Code:
 
 (require 'rime)
-(module-load rime--module-path)
+
+(defun rime-regexp-init ()
+  "Init rime-regexp."
+  (module-load rime--module-path))
 
 (defun rime-regexp-get-candidates-list (str)
   "Read STR, and return the RIME candidates words list."
@@ -61,5 +64,6 @@
             str))))
       lst "")))
 
+(rime-regexp-init)
 (provide 'rime-regexp)
 ;;; rime-regexp.el ends here
