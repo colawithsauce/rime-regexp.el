@@ -59,7 +59,8 @@ This function is designed to only take consistent alpha string as args."
      (lambda (str)
        "Turn code to regexp."
        (if (or (string-match-p "[^a-z']+" str)
-               (equal str ""))
+               (equal str "")
+               rime-active-mode)
            str
          (let* ((str1 (replace-regexp-in-string "'" "" str))
                 (commit-and-candidates (rime-regexp-get-candidates-list str1)) ;; ("计算科学" "与" "瓦")
