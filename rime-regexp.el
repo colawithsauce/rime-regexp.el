@@ -21,10 +21,6 @@
 
 (require 'rime)
 
-(defun rime-regexp-init ()
-  "Init rime-regexp."
-  (module-load rime--module-path))
-
 (defun rime-regexp-get-candidates-list (str)
   "Read STR, and return a list contain RIME commit and candidates.
 
@@ -73,6 +69,5 @@ This function is designed to only take consistent alpha string as args."
             str))))
       lst "")))
 
-(rime-regexp-init)
 (provide 'rime-regexp)
 ;;; rime-regexp.el ends here
