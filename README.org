@@ -1,17 +1,20 @@
 #+TITLE: rime-regexp.el
 * 目标
-本来的目标是能够在 emacs 中使 ~vertico~ 能够支持 ~98五笔~ 进行搜索，目前还存在有一些小缺陷。
+本来的目标是能够在 emacs 中使 ~vertico~ 能够支持 ~98五笔~ 进行搜索， +目前还存在有一些小缺陷。+
 
-但是现在做完后发现好像是只要 ~rime~ 支持就能够搜索，无论是拼音还是五笔。而且实现了 regexp 的话，也不止可以应用在 ~vertico~ 上面了，所以就直接起名 ~rime-regexp~ 了。
+但是现在做完后发现好像是只要 ~rime~ 支持就能够搜索，无论是拼音还是五笔。
+
+而且实现了 regexp 的话，也不止可以应用在 ~vertico~ 上面了，所以就直接起名 ~rime-regexp~ 了。（但是目前我只写了 vertico 的支持）
 * 依赖
 [[https://github.com/DogLooksGood/emacs-rime][emacs-rime]]
 
 * 目前的缺陷
-1. 需要在使用之前先激活关闭一下输入法 (emacs-rime)
+** [X] 需要在使用之前先激活关闭一下输入法 (emacs-rime)
++如果要使用 RIME 进行 regexp 搜索的话，目前需要先手动先开启关闭一次输入法，使 RIME 先启动。+
 
-   如果要使用 RIME 进行 regexp 搜索的话，目前需要先手动先开启关闭一次输入法，使 RIME 先启动。
++但即使不做这步，也是可以进行 regexp 搜索的，只是不可以使用 RIME 搜索罢了，原因暂时不明+
 
-   但即使不做这步，也是可以进行 regexp 搜索的，只是不可以使用 RIME 搜索罢了，原因暂时不明。
+此问题已经解决
 
 * 图
 [[file:example.png]]
@@ -26,11 +29,5 @@ git clone https://github.com/colawithsauce/rime-regexp.el /what/ever/you/like
 (use-package rime-regexp
   :load-path "~/.doom.d/lisp/rime-regexp.el"
   :config
-  (use-package vertico
-    :config
-    ;; Add pinyin (wubi?) search support.
-    (defun orderless-regexp-pinyin (str)
-      (setf (car str) (rime-regexp-build-regexp-string (car str)))
-      str)
-    (advice-add 'orderless-regexp :filter-args #'orderless-regexp-pinyin)))
+  (rime-regexp-mode t))
 #+end_src

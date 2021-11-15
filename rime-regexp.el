@@ -69,5 +69,26 @@ This function is designed to only take consistent alpha string as args."
             str))))
       lst "")))
 
+(defun rime-regexp-load-rime ()
+  "Load rime."
+  (unless rime--lib-loaded
+          (unless (file-exists-p rime--module-path)
+            (rime-compile-module))
+          (rime--load-dynamic-module)))
+
+(defun rime-regexp-pinyin (str)
+  "Get regexp from pinyin."
+  (setf (car str) (rime-regexp-build-regexp-string (car str))) str)
+
+;;;###autoload
+(define-minor-mode rime-regexp-mode
+  "Search thing using rime."
+  :global t
+  (if rime-regexp-mode
+      (progn
+        (rime-regexp-load-rime)
+        (advice-add 'orderless-regexp :filter-args #'rime-regexp-pinyin))
+    (advice-remove 'orderless-regexp #'rime-regexp-pinyin)))
+
 (provide 'rime-regexp)
 ;;; rime-regexp.el ends here
