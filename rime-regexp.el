@@ -8,8 +8,8 @@
 ;; Modified: August 01, 2021
 ;; Version: 0.0.1
 ;; Keywords: i18n
-;; Homepage: https://github.com/colawithsauce/rime-regexp
-;; Package-Requires: ((emacs "25.4") (emacs-rime "1.0.5"))
+;; Homepage: https://github.com/colawithsauce/rime-regexp.el
+;; Package-Requires: ((emacs "25.4") (rime "1.0.5"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -66,8 +66,8 @@ This function is designed to only take consistent alpha string as args."
            (if (or commit candidates)
                (rx-to-string
                 `(: (or ,str (: ,@commit ,(if candidates `(or ,@candidates) "")))))
-            str))))
-      lst "")))
+             str))))
+     lst "")))
 
 (defun rime-regexp-load-rime ()
   "Load rime."
