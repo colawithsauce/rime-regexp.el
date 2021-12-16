@@ -9,6 +9,11 @@
 [[https://github.com/DogLooksGood/emacs-rime][emacs-rime]]
 
 * 目前的缺陷
+** [ ] 功能需求：简体繁体一起搜索
+设想增加一个简体繁体同时搜索的功能，自己实现了一版用 ~shell-command-to-string~ 调用 =OpenCC= 的实现，但是性能非常成问题。输入一个字要卡半秒。
+
+目前有两个方案，一是直接改rime，那就不关本项目的事情了，另一个方案是延迟转换，但是不知道应该如何实现。
+
 ** [X] 需要在使用之前先激活关闭一下输入法 (emacs-rime)
 +如果要使用 RIME 进行 regexp 搜索的话，目前需要先手动先开启关闭一次输入法，使 RIME 先启动。+
 
