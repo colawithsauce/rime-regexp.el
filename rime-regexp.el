@@ -87,8 +87,11 @@ This function is designed to only take consistent alpha string as args."
   (if rime-regexp-mode
       (progn
         (rime-regexp-load-rime)
-        (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args))
-    (advice-remove 'orderless-regexp #'rime-regexp-filter-args)))
+        (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)
+        ;; Add support for evil user
+        (advice-add 'evil-ex-search-full-pattern :filter-args #'rime-regexp-filter-args))
+    (advice-remove 'orderless-regexp #'rime-regexp-filter-args)
+    (advice-remove 'evil-ex-search-full-pattern #'rime-regexp-filter-args)))
 
 (provide 'rime-regexp)
 ;;; rime-regexp.el ends here
