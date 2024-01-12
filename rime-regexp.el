@@ -21,6 +21,14 @@
 
 (require 'rime)
 
+(defvar rime-regexp--max-code-length 0
+  "Max code length, if less equal than 0 then no limit on its length. This option is to prevent inputs like:
+
+Input: english
+Output: 汀
+
+Explain: 'engl' hit none on wubi table, but 'ish' hit character '汀'.")
+
 (defun rime-regexp-get-candidates-list (str)
   "Read STR, and return a list contain RIME commit and candidates.
 
@@ -31,16 +39,18 @@ Input: yfthgn
 Output: (\"计算\" \"与\" \"瓦\")
 
 This function is designed to only take consistent alpha string as args."
-  (rime-lib-clear-composition)
-  (mapc (lambda (c) (rime-lib-process-key c 0)) str)
-  (let ((candidates (alist-get 'candidates (alist-get 'menu (rime-lib-get-context))))
-        (commit (rime-lib-get-commit))
-        (result nil))
-    (rime-lib-clear-composition) ;; Did not influence rime.
-    (dolist (c candidates)
-      (cl-pushnew (car c) result))
-    ;; Commit 是已经肯定的输入；而 candidates 是还没有肯定的输入
-    (if (or commit result) `(,commit . ,(reverse result)) nil)))
+  (when (or (<= rime-regexp--max-code-length 0)
+            (<= (length str) rime-regexp--max-code-length))
+    (rime-lib-clear-composition)
+    (mapc (lambda (c) (rime-lib-process-key c 0)) str)
+    (let ((candidates (alist-get 'candidates (alist-get 'menu (rime-lib-get-context))))
+          (commit (rime-lib-get-commit))
+          (result nil))
+      (rime-lib-clear-composition) ;; Did not influence rime.
+      (dolist (c candidates)
+        (cl-pushnew (car c) result))
+      ;; Commit 是已经肯定的输入；而 candidates 是还没有肯定的输入
+      (if (or commit result) `(,commit . ,(reverse result)) nil))))
 
 (defun rime-regexp-build-regexp-string (str)
   "Build regexp with rime use STR."
