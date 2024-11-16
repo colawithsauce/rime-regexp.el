@@ -107,6 +107,13 @@ This function is designed to only take consistent alpha string as args."
   "Get regexp from pinyin."
   (setf (car args) (rime-regexp-build-regexp-string (car args))) args)
 
+(defun isearch-function-with-rime ()
+    `(lambda (string &optional bound noerror count)
+       (funcall (if ,isearch-forward
+                    're-search-forward
+                  're-search-backward)
+                (rime-regexp-build-regexp-string string) bound noerror count)))
+
 ;;;###autoload
 (define-minor-mode rime-regexp-mode
   "Search thing using rime."
@@ -115,9 +122,11 @@ This function is designed to only take consistent alpha string as args."
       (progn
         (rime-regexp-load-rime)
         (advice-add 'orderless-regexp :filter-args #'rime-regexp-filter-args)
+        (setq isearch-search-fun-function 'isearch-function-with-rime)
         ;; Add support for evil user
         (advice-add 'evil-ex-search-full-pattern :filter-args #'rime-regexp-filter-args))
     (advice-remove 'orderless-regexp #'rime-regexp-filter-args)
+    (setq isearch-search-fun-function 'isearch-function-with-rime)
     (advice-remove 'evil-ex-search-full-pattern #'rime-regexp-filter-args)))
 
 (provide 'rime-regexp)
