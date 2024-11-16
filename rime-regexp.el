@@ -29,6 +29,13 @@ Output: 汀
 
 Explain: 'engl' hit none on wubi table, but 'ish' hit character '汀'.")
 
+;; TODO: 目前对于像 "yfth tuip" 这种中间有空格的输入，仍然使用“原样发给 librime”的方式处理
+;; 但是这样会有一个问题：我有的时候可能并不想 commit 第一个字。
+;; 拿一个例子来说明，如果我输入：
+;;    -> "ni shijie"
+;; 现在的逻辑会处理成
+;;    -> ("你" "世界" "师姐" "时节" "十届" "视界")
+;; 可以看到，只有 “shijie” 会有一个一对多的处理，而 “ni” 没有。我们期望 "ni" 也能一对多。
 (defun rime-regexp-get-candidates-list (str)
   "Read STR, and return a list contain RIME commit and candidates.
 
@@ -41,15 +48,25 @@ Output: (\"计算\" \"与\" \"瓦\")
 This function is designed to only take consistent alpha string as args."
   (when (or (<= rime-regexp--max-code-length 0)
             (<= (length str) rime-regexp--max-code-length))
+    (setq result nil)
+
     (rime-lib-clear-composition)
     (mapc (lambda (c) (rime-lib-process-key c 0)) str)
-    (let ((candidates (alist-get 'candidates (alist-get 'menu (rime-lib-get-context))))
-          (commit (rime-lib-get-commit))
-          (result nil))
-      (rime-lib-clear-composition) ;; Did not influence rime.
-      (dolist (c candidates)
-        (cl-pushnew (car c) result))
-      ;; Commit 是已经肯定的输入；而 candidates 是还没有肯定的输入
+
+    (setq continue t)
+    (while-let ((candidates (alist-get 'candidates (alist-get 'menu (rime-lib-get-context))))
+                (continuep continue))
+      ;; handle this page
+      (let ((first-elem (caar candidates)))
+        (if (cl-member first-elem result :test 'string=) ; met recurence
+            (setq continue nil) ; then break
+          (dolist (c candidates)
+            (cl-pushnew (car c) result))))
+      ;; goto next page
+      (rime-lib-process-key #xff56 0))
+
+    (rime-lib-clear-composition)
+    (let ((commit (rime-lib-get-commit)))
       (if (or commit result) `(,commit . ,(reverse result)) nil))))
 
 (defun rime-regexp-build-regexp-string (str)
